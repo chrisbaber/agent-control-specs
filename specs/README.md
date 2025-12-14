@@ -1,33 +1,45 @@
-# Agent Control Layer Specs
+# Agent Control Layer Specifications
 
-This directory holds the core public-facing standards for ACL:
+This directory contains the core specifications for the Agent Control Layer (ACL).
 
-- `AIP-1.md` — Agent Identity Protocol (short-lived X.509 with AIP OIDs for role, tenant, capabilities, environment, audience; anchored on Ethereum Sepolia).
-- `ADP-1.md` — Agent Data Protocol (Universal Adapter for Agent Work: Action → Observation → Reflection + AIP linkage).
-- `PVS-1.md` — Policy Verdict Schema (structured output from The Gavel).
-- `CTX-1.md` — Capability & Trust eXtensions (stable capability strings for AIP/ADP).
-- `LM_REVIEW_REQUEST.md` — What we ask LMs to review.
-- `LM_REVIEW_RESPONSE.md` / `LM_REVIEW_FEEDBACK.md` — External LM feedback for history.
+## Specifications
 
-## Public repo
+| Spec | Title | Type | Description |
+|------|-------|------|-------------|
+| [SPEC-0](SPEC-0.md) | Specification Process | Informational | Meta-specification defining how ACL specs work |
+| [AIP-1](AIP-1.md) | Agent Identity Protocol | Standards Track | X.509 certificates with AIP OIDs for agent identity |
+| [ADP-1](ADP-1.md) | Agent Data Protocol | Standards Track | Universal adapter for agent work (Action → Observation → Reflection) |
+| [PVS-1](PVS-1.md) | Policy Verdict Schema | Standards Track | Structured output from policy engines |
+| [CTX-1](CTX-1.md) | Capability & Trust eXtensions | Informational | Stable capability strings for AIP/ADP |
 
-These specs are mirrored publicly at `https://github.com/chrisbaber/agent-control-specs` so external teams can adopt them without pulling the full ACL codebase. Suggested repo description: “Open standards for the Agent Control Layer: AIP (identity), ADP (agent data), PVS (policy verdicts), and CTX (capabilities).”
+## Specification Status
 
-## Anchoring (Trustless Verification)
+All specifications are currently in **Request for Comment (RFC)** status, seeking community feedback before finalization.
 
-The Root CA fingerprint is anchored on Ethereum Sepolia for independent verification:
+## Blockchain Anchoring
 
-- Tx: `0x9349d41f0c92d128cbc07e8d4697a92fa7d107b2468c1f2fc0e9a3bc6c74a33a`
-- Verify on Etherscan: https://sepolia.etherscan.io/tx/0x9349d41f0c92d128cbc07e8d4697a92fa7d107b2468c1f2fc0e9a3bc6c74a33a
+The Root CA fingerprint is anchored on Ethereum Sepolia for trustless verification:
+
+- **Transaction**: [`0x9349d41f0c92d128cbc07e8d4697a92fa7d107b2468c1f2fc0e9a3bc6c74a33a`](https://sepolia.etherscan.io/tx/0x9349d41f0c92d128cbc07e8d4697a92fa7d107b2468c1f2fc0e9a3bc6c74a33a)
 
 ## Versioning
 
-- Specs carry explicit `version` fields in examples (e.g., `version: "adp-1"`, `version: "pvs-1"`).
-- Use new major numbers for breaking changes (e.g., `adp-2`) and tag releases in the public repo (`aip-1.0`, `adp-1.0`, etc.).
+- Specifications carry explicit version identifiers (e.g., `version: "adp-1"`)
+- Breaking changes increment the major version (e.g., `adp-2`)
+- Releases are tagged in this repository (e.g., `aip-1.0`, `adp-1.0`)
 
-## Publishing guidance
+## Machine-Readable Schemas
 
-- Mirror `docs/specs/*.md` to the public repo (manual copy or small sync script).
-- Keep a simple CHANGELOG in the public repo noting spec-level changes.
-- Link the public repo from product/marketing sites (AgentControlLayer.com, OSforAgents.com, etc.) and from relevant docs (`DEEP_MOAT_LAUNCH_KIT`, `TECHNICAL_FEATURES`).
+JSON Schema definitions are available in the `/schemas` directory:
 
+- `adp-1.schema.json` - Agent Data Protocol schema
+- `pvs-1.schema.json` - Policy Verdict Schema
+
+## Examples and Test Vectors
+
+- `/examples` - Sample payloads and certificates
+- `/test-vectors` - Validation test cases for implementers
+
+## Contributing
+
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines on proposing changes to specifications.
