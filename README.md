@@ -143,11 +143,12 @@ openssl x509 -in agent.crt -text -noout | grep -E "59999\.1\.(6|7)"
 
 ## Trustless Verification
 
-The current Root CA fingerprint is anchored on Ethereum Sepolia:
+Identity roots are anchored on Ethereum for immutability.
 
-- **Transaction**: [`0x9349d41f0c92d128cbc07e8d4697a92fa7d107b2468c1f2fc0e9a3bc6c74a33a`](https://sepolia.etherscan.io/tx/0x9349d41f0c92d128cbc07e8d4697a92fa7d107b2468c1f2fc0e9a3bc6c74a33a)
-
-A mainnet anchor will be added upon production readiness; both anchors will be documented here once published.
+| Network | Status | Root TX |
+| :--- | :--- | :--- |
+| **Sepolia (Testnet)** | 🟢 Active | [`0x9349d41f0c92d128cbc07e8d4697a92fa7d107b2468c1f2fc0e9a3bc6c74a33a`](https://sepolia.etherscan.io/tx/0x9349d41f0c92d128cbc07e8d4697a92fa7d107b2468c1f2fc0e9a3bc6c74a33a) |
+| **Mainnet** | 🟡 Pending | *Scheduled for Q1 2026 Release* |
 
 ---
 
@@ -178,6 +179,15 @@ These specifications are designed to be implementation-agnostic. Reference them 
 | [LM Review Materials](specs/) | Requests and responses from external model reviewers |
 
 The reference implementation lives in the private ACL codebase; this repo is the public spec mirror for anyone to adopt.
+
+---
+
+## Adoption & Implementation
+
+The reference implementation of these standards is available in the **Agent Control Layer** platform.
+
+* **Enterprise:** [AgentComplianceLayer.com](https://agentcompliancelayer.com) (Governance & Audit)
+* **Developers:** [AgentOpsPlatform.com](https://agentopsplatform.com) (Build & Debug)
 
 ---
 
