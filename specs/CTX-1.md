@@ -1,10 +1,15 @@
 ---
-ctx: 1
-title: Capability & Trust eXtensions (CTX) - Standard Capability Strings for AIP & ADP
-status: Draft
+spec: CTX-1
+title: Capability & Trust eXtensions
+subtitle: Standard Capability Strings for AIP & ADP
+author: Agent Control Layer (ACL) Team <specs@agentcontrollayer.com>
+status: Request for Comment (RFC)
 type: Informational
-author: Agent Control Layer (ACL) Team
+category: Capabilities
 created: 2025-12-10
+updated: 2025-12-14
+requires: None
+replaces: None
 ---
 
 # Abstract

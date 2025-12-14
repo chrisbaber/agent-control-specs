@@ -1,10 +1,15 @@
 ---
-aip: 1
-title: Agent Identity Protocol (AIP) - The Standard for Autonomous Trust
-status: Draft
+spec: AIP-1
+title: Agent Identity Protocol
+subtitle: The Standard for Autonomous Trust
+author: Agent Control Layer (ACL) Team <specs@agentcontrollayer.com>
+status: Request for Comment (RFC)
 type: Standards Track
-author: Agent Control Layer (ACL) Team
+category: Identity
 created: 2025-12-09
+updated: 2025-12-14
+requires: None
+replaces: None
 ---
 
 # Abstract

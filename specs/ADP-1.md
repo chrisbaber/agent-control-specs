@@ -1,10 +1,15 @@
 ---
-adp: 1
-title: Agent Data Protocol (ADP) - Universal Adapter for Agent Work
-status: Draft
+spec: ADP-1
+title: Agent Data Protocol
+subtitle: Universal Adapter for Agent Work
+author: Agent Control Layer (ACL) Team <specs@agentcontrollayer.com>
+status: Request for Comment (RFC)
 type: Standards Track
-author: Agent Control Layer (ACL) Team
+category: Data
 created: 2025-12-10
+updated: 2025-12-14
+requires: AIP-1, CTX-1
+replaces: None
 ---
 
 # Abstract

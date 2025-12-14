@@ -1,10 +1,15 @@
 ---
-pvs: 1
-title: Policy Verdict Schema (PVS) - Standard Output for The Gavel
-status: Draft
+spec: PVS-1
+title: Policy Verdict Schema
+subtitle: Standard Output for The Gavel
+author: Agent Control Layer (ACL) Team <specs@agentcontrollayer.com>
+status: Request for Comment (RFC)
 type: Standards Track
-author: Agent Control Layer (ACL) Team
+category: Policy
 created: 2025-12-10
+updated: 2025-12-14
+requires: ADP-1
+replaces: None
 ---
 
 # Abstract
