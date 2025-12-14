@@ -1,0 +1,140 @@
+{
+  "$schema": "https://agentcontrollayer.com/schemas/adp-1.schema.json",
+  "description": "Test vectors for ADP-1 schema validation",
+  "vectors": [
+    {
+      "id": "adp-valid-complete",
+      "description": "Valid complete agent run with all fields",
+      "valid": true,
+      "data": {
+        "version": "adp-1",
+        "run_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "tenant_id": "tenant-test",
+        "agent": {
+          "agent_id": "test-agent",
+          "agent_version": "v1",
+          "framework": "acl",
+          "aip": {
+            "cert_fingerprint": "sha256:abc123",
+            "tenant_id": "tenant-test",
+            "capabilities": ["agent:test-agent"]
+          }
+        },
+        "steps": [],
+        "status": "succeeded",
+        "started_at": "2025-01-01T00:00:00.000Z",
+        "completed_at": "2025-01-01T00:00:01.000Z"
+      }
+    },
+    {
+      "id": "adp-valid-with-steps",
+      "description": "Valid run with agent steps",
+      "valid": true,
+      "data": {
+        "version": "adp-1",
+        "run_id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+        "tenant_id": "tenant-test",
+        "agent": {
+          "agent_id": "worker",
+          "aip": {
+            "cert_fingerprint": "sha256:def456"
+          }
+        },
+        "steps": [
+          {
+            "index": 0,
+            "timestamp": "2025-01-01T00:00:00.500Z",
+            "action": {
+              "type": "tool_call",
+              "name": "search",
+              "input": {"query": "test"}
+            },
+            "observation": {
+              "type": "tool_result",
+              "output": {"results": []}
+            }
+          }
+        ],
+        "status": "succeeded",
+        "started_at": "2025-01-01T00:00:00.000Z",
+        "completed_at": "2025-01-01T00:00:01.000Z"
+      }
+    },
+    {
+      "id": "adp-valid-failed",
+      "description": "Valid failed run with error",
+      "valid": true,
+      "data": {
+        "version": "adp-1",
+        "run_id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+        "tenant_id": "tenant-test",
+        "agent": {
+          "agent_id": "worker",
+          "aip": {
+            "cert_fingerprint": "sha256:ghi789"
+          }
+        },
+        "steps": [],
+        "status": "failed",
+        "error": {
+          "code": "TIMEOUT",
+          "message": "Operation timed out"
+        },
+        "started_at": "2025-01-01T00:00:00.000Z",
+        "completed_at": "2025-01-01T00:05:00.000Z"
+      }
+    },
+    {
+      "id": "adp-invalid-missing-version",
+      "description": "Invalid: missing version field",
+      "valid": false,
+      "data": {
+        "run_id": "d4e5f6a7-b8c9-0123-defa-234567890123",
+        "tenant_id": "tenant-test",
+        "agent": {
+          "agent_id": "worker",
+          "aip": {"cert_fingerprint": "sha256:xyz"}
+        },
+        "steps": [],
+        "status": "succeeded",
+        "started_at": "2025-01-01T00:00:00.000Z",
+        "completed_at": "2025-01-01T00:00:01.000Z"
+      }
+    },
+    {
+      "id": "adp-invalid-bad-status",
+      "description": "Invalid: unknown status value",
+      "valid": false,
+      "data": {
+        "version": "adp-1",
+        "run_id": "e5f6a7b8-c9d0-1234-efab-345678901234",
+        "tenant_id": "tenant-test",
+        "agent": {
+          "agent_id": "worker",
+          "aip": {"cert_fingerprint": "sha256:xyz"}
+        },
+        "steps": [],
+        "status": "unknown_status",
+        "started_at": "2025-01-01T00:00:00.000Z",
+        "completed_at": "2025-01-01T00:00:01.000Z"
+      }
+    },
+    {
+      "id": "adp-invalid-missing-aip",
+      "description": "Invalid: agent missing aip block",
+      "valid": false,
+      "data": {
+        "version": "adp-1",
+        "run_id": "f6a7b8c9-d0e1-2345-fabc-456789012345",
+        "tenant_id": "tenant-test",
+        "agent": {
+          "agent_id": "worker"
+        },
+        "steps": [],
+        "status": "succeeded",
+        "started_at": "2025-01-01T00:00:00.000Z",
+        "completed_at": "2025-01-01T00:00:01.000Z"
+      }
+    }
+  ]
+}

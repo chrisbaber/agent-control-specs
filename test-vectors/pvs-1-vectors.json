@@ -1,0 +1,94 @@
+{
+  "$schema": "https://agentcontrollayer.com/schemas/pvs-1.schema.json",
+  "description": "Test vectors for PVS-1 schema validation",
+  "vectors": [
+    {
+      "id": "pvs-valid-approved",
+      "description": "Valid approved verdict with all fields",
+      "valid": true,
+      "data": {
+        "version": "pvs-1",
+        "approved": true,
+        "reasoning": "All policies satisfied.",
+        "policy_violations": [],
+        "confidence_score": 0.99,
+        "policy_set": ["Policy A", "Policy B"],
+        "metadata": {
+          "engine": "the-gavel",
+          "latency_ms": 100
+        }
+      }
+    },
+    {
+      "id": "pvs-valid-rejected",
+      "description": "Valid rejected verdict with violations",
+      "valid": true,
+      "data": {
+        "version": "pvs-1",
+        "approved": false,
+        "reasoning": "Policy violation detected.",
+        "policy_violations": ["Policy A"],
+        "confidence_score": 0.95
+      }
+    },
+    {
+      "id": "pvs-valid-minimal",
+      "description": "Valid verdict with only required fields",
+      "valid": true,
+      "data": {
+        "version": "pvs-1",
+        "approved": true,
+        "reasoning": "OK",
+        "policy_violations": [],
+        "confidence_score": 1.0
+      }
+    },
+    {
+      "id": "pvs-invalid-missing-version",
+      "description": "Invalid: missing version field",
+      "valid": false,
+      "data": {
+        "approved": true,
+        "reasoning": "OK",
+        "policy_violations": [],
+        "confidence_score": 1.0
+      }
+    },
+    {
+      "id": "pvs-invalid-wrong-version",
+      "description": "Invalid: wrong version string",
+      "valid": false,
+      "data": {
+        "version": "pvs-2",
+        "approved": true,
+        "reasoning": "OK",
+        "policy_violations": [],
+        "confidence_score": 1.0
+      }
+    },
+    {
+      "id": "pvs-invalid-confidence-range",
+      "description": "Invalid: confidence_score > 1.0",
+      "valid": false,
+      "data": {
+        "version": "pvs-1",
+        "approved": true,
+        "reasoning": "OK",
+        "policy_violations": [],
+        "confidence_score": 1.5
+      }
+    },
+    {
+      "id": "pvs-invalid-approved-with-violations",
+      "description": "Invalid: approved=true but has violations",
+      "valid": false,
+      "data": {
+        "version": "pvs-1",
+        "approved": true,
+        "reasoning": "Should not have violations",
+        "policy_violations": ["Some violation"],
+        "confidence_score": 0.9
+      }
+    }
+  ]
+}
