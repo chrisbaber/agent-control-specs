@@ -140,13 +140,12 @@ openssl x509 -in agent.crt -noout -dates
 ---
 
 ## Trustless Verification
-
 Identity roots are anchored on Ethereum for immutability.
 
-| Network | Status | Transaction |
-|---------|--------|-------------|
-| **Sepolia (Testnet)** | Active | [`0x9349d41f...`](https://sepolia.etherscan.io/tx/0x9349d41f0c92d128cbc07e8d4697a92fa7d107b2468c1f2fc0e9a3bc6c74a33a) |
-| **Mainnet** | Pending | Scheduled Q1 2026 |
+| Network | Status | Root TX |
+| :--- | :--- | :--- |
+| **Sepolia (Testnet)** | 🟢 Active | `0x9349d41f0c92d128cbc07e8d4697a92fa7d107b2468c1f2fc0e9a3bc6c74a33a` |
+| **Mainnet** | 🟡 Pending | *Scheduled for Q1 2026 Release* |
 
 ---
 
@@ -184,13 +183,11 @@ For security vulnerabilities, see [SECURITY.md](SECURITY.md).
 ---
 
 ## Adoption & Implementation
+The reference implementation of these standards is available in the **Agent Control Layer** platform.
 
-The reference implementation is available in the **Agent Control Layer** platform:
-
-| Platform | Purpose | Link |
-|----------|---------|------|
-| Enterprise | Governance & Audit | [AgentComplianceLayer.com](https://agentcompliancelayer.com) |
-| Developers | Build & Debug | [AgentOpsPlatform.com](https://agentopsplatform.com) |
+* **For Enterprise:** [AgentComplianceLayer.com](https://agentcompliancelayer.com) (Governance, Risk & Audit)
+* **For Developers:** [AgentOpsPlatform.com](https://agentopsplatform.com) (Build, Debug & Trace)
+* **Reference Codebase:** [agentcontrollayer/acl](https://github.com/chrisbaber/acl) (Private Beta)
 
 ---
 
