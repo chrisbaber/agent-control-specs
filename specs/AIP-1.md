@@ -80,6 +80,9 @@ The ACL reference implementation primarily encodes semantics in custom AIP exten
 
 We define the `1.3.6.1.4.1.59999` (Private Enterprise Number - Placeholder for ACL) arc for AIP specific data.
 
+> **Note on IANA Assignment:**
+> The OID arc `59999` is currently used for RFC/Draft purposes. A dedicated Private Enterprise Number (PEN) will be assigned by IANA for the v1.0 release.
+
 | OID                     | Name                 | Data Type    | Description                                                                    |
 | :---------------------- | :------------------- | :----------- | :----------------------------------------------------------------------------- |
 | `1.3.6.1.4.1.59999.1.1` | **AIP-Version**      | `INTEGER`    | Protocol version (e.g., `1`).                                                  |
