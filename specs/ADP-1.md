@@ -1,13 +1,24 @@
 ---
-adp: 1
-title: Agent Data Protocol (ADP) - Universal Adapter for Agent Work
-status: Draft
+spec: ADP-1
+title: Agent Data Protocol
+subtitle: Universal Adapter for Agent Work
+author: Agent Control Layer (ACL) Team <specs@agentcontrollayer.com>
+status: Request for Comment (RFC)
 type: Standards Track
-author: Agent Control Layer (ACL) Team
+category: Data
 created: 2025-12-10
+updated: 2025-12-14
+requires: AIP-1, CTX-1
+replaces: None
 ---
 
-# Abstract
+# ADP-1: Agent Data Protocol
+
+## Status of This Memo
+
+This document specifies a standards track protocol for the Agent Control Layer ecosystem and requests discussion and suggestions for improvements. Distribution of this memo is unlimited.
+
+## Abstract
 
 The Agent Data Protocol (ADP-1) defines a standard JSON representation for **Agent Work**: how an agent receives tasks, takes actions, observes results, reflects, and produces final outputs. The goal is to provide a **framework-agnostic wire format** for agent runs so that tools like LangChain, CrewAI, AutoGen, LangGraph, and custom frameworks can all interoperate on a shared control plane.
 
@@ -18,22 +29,51 @@ ADP-1 is designed to pair with the **Agent Identity Protocol (AIP-1)**:
 
 Together, they allow platforms like Agent Control Layer (ACL) to provide cross-framework security, policy enforcement, monitoring, and analytics for autonomous agents.
 
-# 1. Design Goals
+## Table of Contents
 
-1.  **Framework Agnostic** — Support LangChain, CrewAI, AutoGen, custom agents, etc. without privileging any one framework.
-2.  **Minimal but Extensible** — Small core schema (Action → Observation → Reflection), with well-defined extension points.
-3.  **AIP-Aware** — Every run and step is tied back to cryptographic identity (AIP-1) without requiring consumers to understand PKI details.
-4.  **Streaming-Friendly** — Structured so events can be emitted incrementally during a run.
-5.  **Audit & Control Ready** — Suitable for security analytics, policy enforcement (e.g., The Gavel), and tamper-evident audit chains.
+1. [Terminology](#1-terminology)
+2. [Design Goals](#2-design-goals)
+3. [Core Concepts](#3-core-concepts)
+4. [Relationship to AIP-1](#4-relationship-to-aip-1)
+5. [Policy Verdicts](#5-policy-verdicts)
+6. [Extension Points](#6-extension-points)
+7. [Security Considerations](#7-security-considerations)
+8. [Conformance](#8-conformance)
+9. [Reference Implementation](#9-reference-implementation)
+10. [Future Work](#10-future-work)
+11. [References](#11-references)
+12. [Acknowledgments](#12-acknowledgments)
 
-# 2. Core Concepts
+## 1. Terminology
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.
+
+**Agent Run**: A complete execution instance of an agent performing a task from start to completion.
+
+**Agent Step**: A single unit of work within a run, consisting of Action, Observation, and optional Reflection.
+
+**Action**: An operation performed by the agent (tool call, message, inference, etc.).
+
+**Observation**: The result or feedback from an action.
+
+**Reflection**: The agent's reasoning about the observation and next steps.
+
+## 2. Design Goals
+
+1. **Framework Agnostic** — Support LangChain, CrewAI, AutoGen, custom agents, etc. without privileging any one framework.
+2. **Minimal but Extensible** — Small core schema (Action → Observation → Reflection), with well-defined extension points.
+3. **AIP-Aware** — Every run and step is tied back to cryptographic identity (AIP-1) without requiring consumers to understand PKI details.
+4. **Streaming-Friendly** — Structured so events can be emitted incrementally during a run.
+5. **Audit & Control Ready** — Suitable for security analytics, policy enforcement (e.g., The Gavel), and tamper-evident audit chains.
+
+## 3. Core Concepts
 
 ADP defines two primary objects:
 
 - **Agent Run** — A full execution instance of an agent performing work.
 - **Agent Step** — A single Action → Observation → Reflection unit within that run.
 
-## 2.1 Agent Run
+### 3.1 Agent Run
 
 An **Agent Run** represents one end-to-end execution of an agent for a given task.
 
@@ -45,21 +85,17 @@ An **Agent Run** represents one end-to-end execution of an agent for a given tas
   "trace": {
     "trace_id": "0af7651916cd43dd8448eb211c80319c",
     "span_id": "b7ad6b7169203331",
-    "parent_span_id": "0000000000000000" // optional
+    "parent_span_id": "0000000000000000"
   },
   "agent": {
     "agent_id": "coach",
     "agent_version": "v3",
-    "framework": "acl",         // e.g., "langchain", "crew-ai", "autogen", "custom"
-    "framework_run_id": "abc123", // optional, framework-specific identifier
+    "framework": "acl",
+    "framework_run_id": "abc123",
     "aip": {
-      "cert_fingerprint": "0xabc123...",
+      "cert_fingerprint": "sha256:abc123...",
       "tenant_id": "tenant-123",
-      "capabilities": [
-        "agent:coach",
-        "tenant:tenant-123",
-        "service_account:svc-xyz"
-      ]
+      "capabilities": ["agent:coach", "tenant:tenant-123"]
     }
   },
   "context": {
@@ -69,17 +105,14 @@ An **Agent Run** represents one end-to-end execution of an agent for a given tas
     "session_id": "sess-789",
     "labels": ["demo", "security_review"]
   },
-  "steps": [
-    /* AgentStep objects, see below */
-  ],
+  "steps": [],
   "final_output": {
     "type": "message",
     "content": "Here is your security review summary...",
     "format": "text/plain"
   },
-  "status": "succeeded", // "succeeded" | "failed" | "cancelled" | "timeout"
-  "error": null,         // optional structured error if status != succeeded
-  "cancellation": null,  // optional cancellation info when status = "cancelled"
+  "status": "succeeded",
+  "error": null,
   "started_at": "2025-12-10T19:00:00.000Z",
   "completed_at": "2025-12-10T19:00:12.345Z",
   "metadata": {
@@ -90,46 +123,43 @@ An **Agent Run** represents one end-to-end execution of an agent for a given tas
 }
 ```
 
-### 2.1.1 Required Fields
+#### 3.1.1 Required Fields
 
-- `version` — MUST be `"adp-1"` for this spec.
-- `run_id` — Globally unique ID for this run (UUID recommended).
-- `tenant_id` — Logical tenant / customer identifier.
-- `agent.agent_id` — Stable logical agent identifier (e.g., `coach`, `support_bot_v2`).
-- `agent.aip.cert_fingerprint` — SHA-256 fingerprint (or hex-encoded hash) of the AIP-1 certificate used during this run.
-- `steps` — Array of `AgentStep` objects (MAY be empty for trivial runs).
-- `status` — Final status of the run.
-- `started_at`, `completed_at` — ISO 8601 timestamps.
+| Field | Type | Description |
+|-------|------|-------------|
+| `version` | string | MUST be `"adp-1"` for this spec |
+| `run_id` | string | Globally unique ID for this run (UUID RECOMMENDED) |
+| `tenant_id` | string | Logical tenant/customer identifier |
+| `agent.agent_id` | string | Stable logical agent identifier |
+| `agent.aip.cert_fingerprint` | string | SHA-256 fingerprint of AIP-1 certificate |
+| `steps` | array | Array of AgentStep objects (MAY be empty) |
+| `status` | string | One of: `succeeded`, `failed`, `cancelled`, `timeout` |
+| `started_at` | string | ISO 8601 timestamp |
+| `completed_at` | string | ISO 8601 timestamp |
 
-All other fields are RECOMMENDED but optional.
+All other fields are RECOMMENDED but OPTIONAL.
 
-## 2.2 Agent Step
+### 3.2 Agent Step
 
 An **Agent Step** is the core unit of work: **Action → Observation → Reflection**.
 
 ```jsonc
 {
   "index": 0,
-  "parent_step_index": null, // optional: index of parent step for hierarchical workflows
+  "parent_step_index": null,
   "timestamp": "2025-12-10T19:00:01.234Z",
   "action": {
-    "type": "tool_call",          // "tool_call" | "message" | "plan_update" | "model_inference" | "other"
+    "type": "tool_call",
     "name": "web_search",
-    "input": {
-      "query": "AIP-1 Agent Identity Protocol summary"
-    }
+    "input": {"query": "AIP-1 Agent Identity Protocol summary"}
   },
   "observation": {
-    "type": "tool_result",        // "tool_result" | "environment" | "user_input" | "error" | "none"
-    "output": {
-      "results": [
-        { "title": "AIP-1 Spec", "url": "https://..." }
-      ]
-    },
+    "type": "tool_result",
+    "output": {"results": [{"title": "AIP-1 Spec", "url": "https://..."}]},
     "error": null
   },
   "reflection": {
-    "thought": "I have found the AIP-1 spec; next I should summarize key security properties.",
+    "thought": "I found the spec; next I should summarize key properties.",
     "next_action_hint": "Summarize spec for user",
     "uncertainty": 0.2
   },
@@ -137,116 +167,55 @@ An **Agent Step** is the core unit of work: **Action → Observation → Reflect
     "model": "gpt-4.1",
     "prompt_tokens": 123,
     "completion_tokens": 45,
-    "latency_ms": 350,
-    "cost_usd": 0.00045,
-    "labels": ["search", "research"]
+    "latency_ms": 350
   }
 }
 ```
 
-### 2.2.1 Required Fields
+#### 3.2.1 Required Fields
 
-- `index` — Zero-based step index.
-- `timestamp` — ISO 8601 timestamp for when the step completed.
-- `action.type` — One of the standard action types (see §2.2.2).
-- `observation.type` — One of the standard observation types (see §2.2.3).
+| Field | Type | Description |
+|-------|------|-------------|
+| `index` | integer | Zero-based step index |
+| `timestamp` | string | ISO 8601 timestamp |
+| `action.type` | string | Action type (see 3.2.2) |
+| `observation.type` | string | Observation type (see 3.2.3) |
 
-`reflection` and most of `metadata` are OPTIONAL but strongly RECOMMENDED for advanced analysis and debugging.
+`reflection` and `metadata` are OPTIONAL but strongly RECOMMENDED.
 
-### 2.2.2 Action Types
+#### 3.2.2 Action Types
 
-Standard values for `action.type`:
+| Type | Description |
+|------|-------------|
+| `tool_call` | Agent invoked a tool or function |
+| `message` | Agent produced or consumed a message |
+| `plan_update` | Agent updated its internal plan |
+| `model_inference` | Direct LLM call |
+| `other` | Framework-specific (use `metadata.action_subtype`) |
 
-- `tool_call` — Agent invoked a tool or function.
-- `message` — Agent produced or consumed a message (e.g., chat turn).
-- `plan_update` — Agent updated its internal plan or task breakdown.
-- `model_inference` — Direct LLM call when not better described as a tool.
-- `other` — Fallback for framework-specific actions (MAY be further described via `metadata.action_subtype`).
+#### 3.2.3 Observation Types
 
-### 2.2.3 Observation Types
+| Type | Description |
+|------|-------------|
+| `tool_result` | Result from a tool/function call |
+| `environment` | External environment feedback |
+| `user_input` | Input from a human user |
+| `error` | Error/exception details |
+| `none` | No meaningful observation |
 
-Standard values for `observation.type`:
+## 4. Relationship to AIP-1
 
-- `tool_result` — Result from a tool/function call.
-- `environment` — External environment feedback (e.g., HTTP response, DB write result).
-- `user_input` — New input from a human user (e.g., follow-up question).
-- `error` — Error/exception details.
-- `none` — No meaningful observation (e.g., plan update only).
-
-# 3. Relationship to AIP-1
-
-ADP-1 is explicitly **AIP-aware** but does not require consumers to understand PKI. The `agent.aip` block in the run envelope is the bridge:
-
-```jsonc
-{
-  "agent": {
-    "agent_id": "coach",
-    "agent_version": "v3",
-    "framework": "acl",
-    "aip": {
-      "cert_fingerprint": "0xabc123...",
-      "tenant_id": "tenant-123",
-      "capabilities": [
-        "agent:coach",
-        "tenant:tenant-123",
-        "service_account:svc-xyz"
-      ]
-    }
-  }
-}
-```
+ADP-1 is explicitly **AIP-aware** but does not require consumers to understand PKI. The `agent.aip` block bridges the two:
 
 - `cert_fingerprint` — Matches the SHA-256 fingerprint of the AIP-1 X.509 certificate used during the run.
-- `tenant_id` — Mirrors AIP `Tenant-ID` (`1.3.6.1.4.1.59999.1.3`) when present.
+- `tenant_id` — Mirrors AIP `Tenant-ID` (`1.3.6.1.4.1.59999.1.3`).
 - `capabilities` — Mirrors or derives from AIP `Capability-Set` (`1.3.6.1.4.1.59999.1.4`).
 
-Implementations MAY include additional AIP-derived metadata (e.g., `agent_role`) in `agent` or `metadata`.
+Implementations MAY include additional AIP-derived metadata in `agent` or `metadata`.
 
-# 4. ACL Reference Mapping (v2.1)
+## 5. Policy Verdicts
 
-The ACL implementation provides a concrete mapping between its internal execution model and ADP-1.
-
-## 4.1 Run Mapping
-
-- ADP `run_id` → ACL `workflow_run.id` or synthetic ID created by `agent-executor`.
-- ADP `tenant_id` → ACL `workflow_runs.tenant_id`.
-- ADP `agent.agent_id` → ACL `agentKey` (e.g., `"coach"`, `"analyst"`).
-- ADP `agent.agent_version` → ACL `agent_config.active_version`.
-- ADP `agent.framework` → `"acl"` for native runs.
-- ADP `agent.aip.cert_fingerprint` → `agent_executions.crypto_identity` (fingerprint from `issueAgentCertificate`).
-- ADP `context` → Derived from `AnalysisState` and `workflow_runs.metadata_json`.
-- ADP `final_output` → Derived from the final `safeOutput` written by `agent-executor`.
-- ADP `metadata.total_tokens` → Sum of token usage recorded in `agent_executions`.
-
-## 4.2 Step Mapping
-
-ADP `AgentStep` can be derived from:
-
-- The internal agent state transitions in `lib/workflows/agent-executor.ts`.
-- Tool invocations and responses (e.g., HTTP calls, Supabase operations).
-- Gavel policy checks (see §5).
-
-ACL MAY emit ADP steps to:
-
-- An internal event stream (for monitoring/analytics).
-- A tamper-evident audit log chain (see `lib/security/audit/audit-log-immutability.ts`).
-
-The initial ACL implementation focuses on **run-level** ADP records, with step-level emission added incrementally for higher value workflows.
-
-# 5. Policy Verdicts (The Gavel)
-
-The Gavel (ACL’s policy judge) already returns structured JSON with:
-
-```ts
-export interface PolicyEvaluation {
-  approved: boolean;
-  reasoning: string;
-  policy_violations: string[];
-  confidence_score: number;
-}
-```
-
-ADP-1 does not require policy verdicts, but RECOMMENDS representing them as specialized steps:
+ADP-1 RECOMMENDS representing policy verdicts (e.g., from The Gavel) as specialized steps:
 
 ```jsonc
 {
@@ -255,53 +224,126 @@ ADP-1 does not require policy verdicts, but RECOMMENDS representing them as spec
   "action": {
     "type": "tool_call",
     "name": "policy_judge",
-    "input": {
-      "draft_output": "…",
-      "policies": ["No PII", "No financial advice"]
-    }
+    "input": {"draft_output": "...", "policies": ["No PII"]}
   },
   "observation": {
     "type": "tool_result",
     "output": {
+      "version": "pvs-1",
       "approved": false,
       "reasoning": "Draft contained direct SSN.",
       "policy_violations": ["No PII"],
       "confidence_score": 0.98
     }
   },
-  "reflection": {
-    "thought": "My output violated the PII policy; I must redact and rephrase.",
-    "next_action_hint": "Regenerate answer without PII.",
-    "uncertainty": 0.1
-  },
-  "metadata": {
-    "kind": "policy_verdict",
-    "policy_engine": "the-gavel",
-    "latency_ms": 650
-  }
+  "metadata": {"kind": "policy_verdict", "policy_engine": "the-gavel"}
 }
 ```
 
-The formal verdict schema is defined in `docs/specs/PVS-1.md`.
+The formal verdict schema is defined in [PVS-1](PVS-1.md).
 
-# 6. Extension Points
+## 6. Extension Points
 
-ADP-1 is intentionally small. Implementations MAY extend:
+ADP-1 is intentionally minimal. Implementations MAY extend:
 
-- `agent.framework` and `agent.framework_run_id` for framework-specific identifiers.
-- `context` with arbitrary keys under a top-level `context` object.
-- `metadata` at both run and step level, using namespaced keys (e.g., `openai.*`, `aws.*`, `acl.*`).
+- `agent.framework` and `agent.framework_run_id` for framework-specific identifiers
+- `context` with arbitrary keys
+- `metadata` at both run and step level, using namespaced keys (e.g., `openai.*`, `aws.*`)
 
 Consumers MUST ignore unknown fields gracefully to maintain forwards compatibility.
 
-# 7. Future Work
+## 7. Security Considerations
 
-Potential future extensions:
+### 7.1 Threat Model
 
-- **Signed ADP Streams** — Sign run/step records with the agent’s certificate (AIP-1) for tamper-evident traces.
-- **Cross-Framework Tool Taxonomy** — Standard names/types for common tools (search, HTTP, DB, email, etc.).
-- **Richer Plan/Task Graphs** — Formal representation of plans and sub-tasks beyond linear steps.
+| Threat | Mitigation |
+|--------|------------|
+| **Data Tampering** | Include AIP cert_fingerprint for verification; sign records |
+| **Information Disclosure** | Implement access controls on ADP records |
+| **Audit Evasion** | Immutable audit log storage; require all runs have ADP records |
+| **Replay/Forgery** | Verify cert_fingerprint against AIP-1 certificates |
+
+### 7.2 Data Sensitivity
+
+ADP records MAY contain sensitive information in:
+- `context.task_description` — User queries
+- `steps[].action.input` — Tool inputs
+- `steps[].observation.output` — Tool outputs
+- `final_output.content` — Agent responses
+
+Implementations MUST:
+- Apply appropriate access controls to ADP records
+- Consider data retention policies
+- Redact sensitive fields when sharing externally
+
+### 7.3 AIP Linkage Verification
+
+Verifiers SHOULD:
+- Validate that `agent.aip.cert_fingerprint` corresponds to a valid AIP-1 certificate
+- Ensure the certificate was valid at `started_at` timestamp
+- Check that `agent.aip.capabilities` match the certificate's Capability-Set
+
+## 8. Conformance
+
+### 8.1 Conformance Levels
+
+**Level 1 (Core)**: An implementation MUST:
+- Emit valid JSON conforming to the ADP-1 schema
+- Include all required fields in Agent Run
+- Include all required fields in Agent Step
+- Use valid `status`, `action.type`, and `observation.type` values
+
+**Level 2 (AIP-Integrated)**: An implementation MUST also:
+- Populate `agent.aip.cert_fingerprint` from actual AIP-1 certificates
+- Include `agent.aip.capabilities` derived from certificate
+- Validate AIP linkage on record consumption
+
+**Level 3 (Complete)**: An implementation MUST also:
+- Emit step-level records for all agent actions
+- Include `reflection` blocks with uncertainty scores
+- Embed PVS-1 verdicts for policy-checked outputs
+
+### 8.2 Schema Validation
+
+A JSON Schema for ADP-1 is provided at `schemas/adp-1.schema.json`. Conforming implementations SHOULD validate records against this schema.
+
+## 9. Reference Implementation
+
+The ACL implementation provides the reference mapping:
+
+| ADP Field | ACL Source |
+|-----------|------------|
+| `run_id` | `workflow_run.id` |
+| `tenant_id` | `workflow_runs.tenant_id` |
+| `agent.agent_id` | `agentKey` |
+| `agent.aip.cert_fingerprint` | `agent_executions.crypto_identity` |
+| `final_output` | `safeOutput` from agent-executor |
+| `metadata.total_tokens` | Sum from `agent_executions` |
+
+## 10. Future Work
+
+- **Signed ADP Streams** — Sign records with AIP-1 certificates for tamper-evidence
+- **Cross-Framework Tool Taxonomy** — Standard names for common tools
+- **Richer Plan/Task Graphs** — Formal representation beyond linear steps
+
+## 11. References
+
+### 11.1 Normative References
+
+- **[RFC2119]** Bradner, S., "Key words for use in RFCs to Indicate Requirement Levels", BCP 14, RFC 2119, March 1997.
+- **[RFC8174]** Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words", BCP 14, RFC 8174, May 2017.
+- **[RFC8259]** Bray, T., Ed., "The JavaScript Object Notation (JSON) Data Interchange Format", STD 90, RFC 8259, December 2017.
+
+### 11.2 Informative References
+
+- **[AIP-1]** Agent Control Layer, "Agent Identity Protocol", AIP-1, 2025.
+- **[CTX-1]** Agent Control Layer, "Capability & Trust eXtensions", CTX-1, 2025.
+- **[PVS-1]** Agent Control Layer, "Policy Verdict Schema", PVS-1, 2025.
+
+## 12. Acknowledgments
+
+The authors thank the early reviewers and implementers who provided feedback on this specification.
 
 ---
 
-_Copyright 2025 Agent Control Layer. Released under standard open-source terms._
+_Copyright 2025 Agent Control Layer. Released under the [MIT License](../LICENSE)._

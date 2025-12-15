@@ -1,41 +1,68 @@
 ---
-ctx: 1
-title: Capability & Trust eXtensions (CTX) - Standard Capability Strings for AIP & ADP
-status: Draft
+spec: CTX-1
+title: Capability & Trust eXtensions
+subtitle: Standard Capability Strings for AIP & ADP
+author: Agent Control Layer (ACL) Team <specs@agentcontrollayer.com>
+status: Request for Comment (RFC)
 type: Informational
-author: Agent Control Layer (ACL) Team
+category: Capabilities
 created: 2025-12-10
+updated: 2025-12-14
+requires: None
+replaces: None
 ---
 
-# Abstract
+# CTX-1: Capability & Trust eXtensions
 
-The Capability & Trust Context (CTX-1, formerly CAP-1) defines a common vocabulary and naming convention for **capability strings** used in:
+## Status of This Memo
 
-- AIP-1 `Capability-Set` X.509 extension (`1.3.6.1.4.1.59999.1.4`).
-- ADP-1 `agent.aip.capabilities`.
+This document provides information for the Agent Control Layer community. It does not specify a standard but defines conventions that implementations SHOULD follow for interoperability. Distribution of this memo is unlimited.
+
+## Abstract
+
+The Capability & Trust eXtensions (CTX-1) defines a common vocabulary and naming convention for **capability strings** used in:
+
+- AIP-1 `Capability-Set` X.509 extension (`1.3.6.1.4.1.59999.1.4`)
+- ADP-1 `agent.aip.capabilities`
 
 Its goals are:
 
-- Provide a **stable, readable set of capability names** that map cleanly onto ACL’s RBAC model.
-- Enable **cross-framework understanding** of what an agent is allowed to do.
-- Avoid overfitting to any single product or internal table structure.
+- Provide a **stable, readable set of capability names** that map cleanly onto ACL's RBAC model
+- Enable **cross-framework understanding** of what an agent is allowed to do
+- Avoid overfitting to any single product or internal table structure
 
-CTX-1 is intentionally small and composable. It defines:
+## Table of Contents
 
-- A **naming convention** for capabilities.
-- A set of **reserved prefixes**.
-- A set of **recommended base capabilities**.
+1. [Terminology](#1-terminology)
+2. [Naming Convention](#2-naming-convention)
+3. [Reserved Prefixes](#3-reserved-prefixes)
+4. [Recommended Capabilities](#4-recommended-capabilities)
+5. [RBAC Mapping](#5-rbac-mapping)
+6. [Security Considerations](#6-security-considerations)
+7. [Conformance](#7-conformance)
+8. [Future Work](#8-future-work)
+9. [References](#9-references)
+10. [Acknowledgments](#10-acknowledgments)
 
-# 1. Naming Convention
+## 1. Terminology
+
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all capitals, as shown here.
+
+**Capability**: A string representing a permission, identity, or constraint granted to an agent.
+
+**Prefix**: The namespace portion of a capability string before the first colon.
+
+**Qualifier**: Additional scoping after the capability name (e.g., resource type, limit).
+
+## 2. Naming Convention
 
 Capabilities are simple strings with the following pattern:
 
-```text
-<namespace>:<name>[:<qualifier>...]
+```
+<prefix>:<name>[:<qualifier>...]
 ```
 
-Examples:
-
+**Examples:**
 - `agent:coach`
 - `tenant:tenant-123`
 - `service_account:svc-xyz`
@@ -43,81 +70,148 @@ Examples:
 - `perm:inputs:write`
 - `budget:usd:100`
 
-Rules:
+**Rules:**
 
-- Names MUST be lowercase ASCII letters, digits, `-`, or `_`.
-- Names SHOULD be stable over time; when behavior changes significantly, prefer a new capability name.
-- Unknown capabilities MUST be ignored (fail-safe) by consumers who do not understand them.
+1. Names MUST contain only lowercase ASCII letters, digits, `-`, or `_`
+2. Names SHOULD be stable over time; when behavior changes significantly, prefer a new capability name
+3. Unknown capabilities MUST be ignored (fail-safe) by consumers who do not understand them
+4. Prefixes MUST NOT contain colons
+5. The total string length SHOULD NOT exceed 256 characters
 
-# 2. Reserved Prefixes
+## 3. Reserved Prefixes
 
-The following prefixes are reserved and SHOULD be interpreted consistently across implementations:
+The following prefixes are reserved and SHOULD be interpreted consistently:
 
-- `agent:` — Identifies a logical agent.
-  - Example: `agent:coach`, `agent:analyst`.
-- `tenant:` — Identifies a tenant / organization.
-  - Example: `tenant:tenant-123`.
-- `service_account:` — Identifies a backing service account.
-  - Example: `service_account:svc-xyz`.
-- `perm:` — Encodes a permission derived from RBAC or similar.
-  - Format: `perm:<resource>:<action>`.
-  - Examples: `perm:workflows:read`, `perm:workflows:write`, `perm:inputs:list`.
-- `budget:` — Encodes budget-related constraints.
-  - Examples: `budget:usd:100`, `budget:tokens:100000`.
+| Prefix | Purpose | Examples |
+|--------|---------|----------|
+| `agent:` | Identifies a logical agent | `agent:coach`, `agent:analyst` |
+| `tenant:` | Identifies a tenant/organization | `tenant:tenant-123` |
+| `service_account:` | Identifies a backing service account | `service_account:svc-xyz` |
+| `perm:` | Encodes an RBAC permission | `perm:workflows:read`, `perm:files:write` |
+| `budget:` | Encodes budget constraints | `budget:usd:100`, `budget:tokens:100000` |
+| `env:` | Encodes environment constraints | `env:production`, `env:staging` |
+| `role:` | Encodes a role bundle | `role:analyst`, `role:admin` |
 
 Other prefixes MAY be defined by implementations as long as they do not conflict with the above.
 
-# 3. Recommended Base Capabilities (ACL v2.1)
+## 4. Recommended Capabilities
 
-ACL v2.1 uses the following base capabilities when issuing agent certificates:
+### 4.1 Identity Capabilities
 
-- `agent:<agent_key>` — Logical agent identifier (e.g., `agent:coach`).
-- `tenant:<tenant_id>` — Tenant identifier.
-- `service_account:<service_account_id>` — Backing service account identifier (if present).
+These identify the agent and its organizational context:
 
-These are currently populated in:
+| Capability | Description |
+|------------|-------------|
+| `agent:<agent_key>` | Logical agent identifier (e.g., `agent:coach`) |
+| `tenant:<tenant_id>` | Tenant/organization identifier |
+| `service_account:<id>` | Backing service account (if applicable) |
 
-- AIP-1 `Capability-Set` extension (`1.3.6.1.4.1.59999.1.4`).
-- ADP-1 `agent.aip.capabilities`.
+### 4.2 Permission Capabilities
 
-Future versions MAY add `perm:*` entries based on ACL’s RBAC permissions (e.g., `perm:workflows:read`) when issuing certificates for agents whose permissions are statically known.
+Format: `perm:<resource>:<action>`
 
-# 4. Mapping from RBAC to CAP
+| Capability | Description |
+|------------|-------------|
+| `perm:workflows:read` | Read workflow definitions |
+| `perm:workflows:write` | Create/modify workflows |
+| `perm:workflows:execute` | Execute workflows |
+| `perm:inputs:read` | Read input data |
+| `perm:inputs:write` | Write input data |
+| `perm:files:read` | Read files |
+| `perm:files:write` | Write files |
+| `perm:secrets:read` | Read secrets (restricted) |
 
-ACL’s RBAC model (`lib/security/authorization/rbac.ts`) uses `{ resource: string; action: string }` pairs.
+### 4.3 Constraint Capabilities
 
-The mapping to CTX-1 `perm:` capabilities is straightforward:
+| Capability | Description |
+|------------|-------------|
+| `budget:usd:<amount>` | Maximum USD spend limit |
+| `budget:tokens:<amount>` | Maximum token usage limit |
+| `env:production` | Valid only in production |
+| `env:staging` | Valid only in staging |
 
-```text
-RBAC { resource: "workflows", action: "read" }  ->  "perm:workflows:read"
-RBAC { resource: "inputs",    action: "write" } ->  "perm:inputs:write"
+## 5. RBAC Mapping
+
+ACL's RBAC model uses `{ resource: string; action: string }` pairs. The mapping to CTX-1 is:
+
+```
+RBAC { resource: "workflows", action: "read" }  →  "perm:workflows:read"
+RBAC { resource: "inputs",    action: "write" } →  "perm:inputs:write"
 ```
 
-Guidelines:
+**Guidelines:**
 
-- For now, ACL MAY include only a small, high-value subset of permissions as capabilities (e.g., `workflows`, `inputs`, `files`) to avoid leaking implementation details.
-- Permissions that are highly dynamic or contextual SHOULD remain in RBAC and **not** be encoded directly in capabilities.
+- Include only high-value, stable permissions as capabilities
+- Avoid encoding highly dynamic or contextual permissions
+- Implementation-specific permissions SHOULD use a namespaced prefix (e.g., `acl:internal:debug`)
 
-# 5. Relationship to AIP-1 and ADP-1
+## 6. Security Considerations
 
-- **AIP-1**:
-  - `Capability-Set` (`1.3.6.1.4.1.59999.1.4`) SHOULD contain an array of CTX-1 capability strings.
-  - ACL currently populates identifier capabilities (`agent:*`, `tenant:*`, `service_account:*`) and MAY add `perm:*` capabilities in future versions.
+### 6.1 Threat Model
 
-- **ADP-1**:
-  - `agent.aip.capabilities` SHOULD mirror or be derived from the AIP-1 `Capability-Set`.
-  - Consumers can make coarse-grained decisions based on identifiers and, where present, `perm:*` capabilities.
+| Threat | Mitigation |
+|--------|------------|
+| **Capability Escalation** | Capabilities are cryptographically bound to AIP-1 certificates |
+| **Spoofing** | Verify capabilities against signed certificate |
+| **Namespace Collision** | Use reserved prefixes; reject unknown prefixes in strict mode |
+| **Information Disclosure** | Capability strings may reveal organizational structure |
 
-# 6. Future Extensions
+### 6.2 Capability Validation
 
-Potential additions:
+Verifiers SHOULD:
+- Parse capability strings according to the naming convention
+- Recognize and enforce reserved prefixes
+- Reject malformed capabilities (missing prefix, invalid characters)
+- Log unknown capabilities for monitoring
 
-- Capability categories (e.g., `perm:workflows:read` → category `"data_read"`).
-- Capability bundles (e.g., `"role:analyst"` expands to a set of `perm:*` capabilities).
-- Negative/deny capabilities (e.g., `deny:files:write`).
+### 6.3 Least Privilege
 
-These can be added in a backwards-compatible way by introducing new prefixes or conventions.
+- Agents SHOULD receive the minimum capabilities required
+- Broad capabilities (e.g., `perm:*:*`) SHOULD NOT be issued
+- Budget capabilities SHOULD have conservative limits
+
+## 7. Conformance
+
+### 7.1 Conformance Requirements
+
+**Producers** (certificate issuers) MUST:
+- Follow the naming convention in Section 2
+- Use reserved prefixes correctly per Section 3
+- Encode capabilities as a JSON array in AIP-1 Capability-Set
+
+**Consumers** (verifiers) MUST:
+- Parse capabilities according to the naming convention
+- Ignore unknown capabilities (fail-safe)
+- NOT grant access based solely on unrecognized capabilities
+
+**Consumers** SHOULD:
+- Validate capability format
+- Log unknown capabilities for monitoring
+- Support the full reserved prefix vocabulary
+
+## 8. Future Work
+
+- **Capability Categories**: Grouping (e.g., `perm:workflows:read` → category `data_read`)
+- **Role Bundles**: `role:analyst` expands to a set of `perm:*` capabilities
+- **Negative Capabilities**: `deny:files:write` for explicit denials
+- **Capability Delegation**: Agent-to-agent capability transfer
+
+## 9. References
+
+### 9.1 Normative References
+
+- **[RFC2119]** Bradner, S., "Key words for use in RFCs to Indicate Requirement Levels", BCP 14, RFC 2119, March 1997.
+- **[RFC8174]** Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words", BCP 14, RFC 8174, May 2017.
+
+### 9.2 Informative References
+
+- **[AIP-1]** Agent Control Layer, "Agent Identity Protocol", AIP-1, 2025.
+- **[ADP-1]** Agent Control Layer, "Agent Data Protocol", ADP-1, 2025.
+
+## 10. Acknowledgments
+
+The authors thank the early reviewers and implementers who provided feedback on this specification.
 
 ---
 
-_Copyright 2025 Agent Control Layer. Released under standard open-source terms._
+_Copyright 2025 Agent Control Layer. Released under the [MIT License](../LICENSE)._
