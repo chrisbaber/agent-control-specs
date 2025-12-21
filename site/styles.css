@@ -1,0 +1,25 @@
+body {
+  background-color: #121212 !important;
+  color: #E0E0E0 !important;
+}
+
+/* Accents */
+:root {
+    --nextra-primary-hue: 45deg;
+}
+
+a, .nextra-menu-desktop a, .nextra-sidebar-container a {
+    color: #E0E0E0;
+}
+a:hover {
+    color: #D4AF37;
+}
+
+button {
+    background-color: #D4AF37;
+    color: #121212;
+}
+
+.nextra-nav-container {
+    background-color: #121212;
+}

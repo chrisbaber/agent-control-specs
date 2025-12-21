@@ -3,32 +3,11 @@
 
 # Agent Control Layer Standards
 
-## Abstract
+## The Problem: An Internet of Un-Governed Agents
 
-The Agent Control Layer (ACL) specifications define open standards for autonomous AI agent identity, data interchange, policy enforcement, and capability management. These specifications enable secure, auditable, and interoperable agent operations across heterogeneous platforms and frameworks.
+As AI agents proliferate, the internet risks becoming a noisy, chaotic, and dangerous place. Without a standardized control layer, agents will struggle to trust one another. The **Agent Control Layer (ACL)** provides the missing infrastructure for identity, governance, and trust.
 
-This repository contains four core specifications:
-
-- **AIP-1** (Agent Identity Protocol): Cryptographic agent identification via short-lived X.509 certificates
-- **ADP-1** (Agent Data Protocol): Framework-agnostic format for recording agent work
-- **PVS-1** (Policy Verdict Schema): Structured policy enforcement decisions
-- **CTX-1** (Capability & Trust eXtensions): Standard capability string vocabulary
-
----
-
-## Specification Overview
-
-| Spec | Title | Category | Status | Description |
-|------|-------|----------|--------|-------------|
-| [AIP-1](specs/AIP-1.md) | Agent Identity Protocol | Identity | RFC | X.509 certificates with custom OIDs, blockchain-anchored root CA |
-| [ADP-1](specs/ADP-1.md) | Agent Data Protocol | Data | RFC | Action-Observation-Reflection format for agent runs |
-| [PVS-1](specs/PVS-1.md) | Policy Verdict Schema | Policy | RFC | JSON structure for policy engine verdicts |
-| [CTX-1](specs/CTX-1.md) | Capability & Trust eXtensions | Capabilities | RFC | Capability string naming conventions |
-| [SPEC-0](specs/SPEC-0.md) | Specification Process | Meta | RFC | Governance and document structure |
-
----
-
-## Architecture
+## Architecture Overview
 
 The following diagram illustrates how the specifications relate to each other:
 
@@ -91,21 +70,44 @@ flowchart TB
 4. **Policy Evaluation**: The Gavel evaluates actions against policies, producing PVS-1 verdicts
 5. **Audit Recording**: Agent work recorded via ADP-1, including AIP linkage and policy verdicts
 
+## Abstract
+
+The Agent Control Layer (ACL) specifications define open standards for autonomous AI agent identity, data interchange, policy enforcement, and capability management. These specifications enable secure, auditable, and interoperable agent operations across heterogeneous platforms and frameworks.
+
+This repository contains four core specifications:
+
+-   **AIP-1** (Agent Identity Protocol): Cryptographic agent identification via short-lived X.509 certificates
+-   **ADP-1** (Agent Data Protocol): Framework-agnostic format for recording agent work
+-   **PVS-1** (Policy Verdict Schema): Structured policy enforcement decisions
+-   **CTX-1** (Capability & Trust eXtensions): Standard capability string vocabulary
+
+---
+
+## Specification Overview
+
+| Spec                      | Title                         | Category     | Status | Description                                                      |
+| ------------------------- | ----------------------------- | ------------ | ------ | ---------------------------------------------------------------- |
+| [AIP-1](specs/AIP-1.md)   | Agent Identity Protocol       | Identity     | RFC    | X.509 certificates with custom OIDs, blockchain-anchored root CA |
+| [ADP-1](specs/ADP-1.md)   | Agent Data Protocol           | Data         | RFC    | Action-Observation-Reflection format for agent runs              |
+| [PVS-1](specs/PVS-1.md)   | Policy Verdict Schema         | Policy       | RFC    | JSON structure for policy engine verdicts                        |
+| [CTX-1](specs/CTX-1.md)   | Capability & Trust eXtensions | Capabilities | RFC    | Capability string naming conventions                             |
+| [SPEC-0](specs/SPEC-0.md) | Specification Process         | Meta         | RFC    | Governance and document structure                                |
+
 ---
 
 ## Implementation Guide
 
 ### Platform Developer Checklist
 
-| Step | Task | Spec Reference | Notes |
-|------|------|----------------|-------|
-| 1 | Generate Root CA and Intermediate CA | AIP-1 Section 4.1 | RSA-4096 or ECDSA P-384 |
-| 2 | Anchor Root CA fingerprint to blockchain | AIP-1 Section 4.1 | Ethereum mainnet or Sepolia |
-| 3 | Implement certificate issuance with AIP OIDs | AIP-1 Section 3.1.2 | All 7 custom extensions |
-| 4 | Define capability vocabulary | CTX-1 Section 3-4 | Reserved prefixes |
-| 5 | Implement certificate verification | AIP-1 Section 4.2 | Chain, OIDs, environment, audience |
-| 6 | Integrate policy engine | PVS-1 Section 3 | PVS-1 compliant verdicts |
-| 7 | Emit ADP-1 records | ADP-1 Section 3 | AIP fingerprint and verdicts |
+| Step | Task                                         | Spec Reference      | Notes                              |
+| ---- | -------------------------------------------- | ------------------- | ---------------------------------- |
+| 1    | Generate Root CA and Intermediate CA         | AIP-1 Section 4.1   | RSA-4096 or ECDSA P-384            |
+| 2    | Anchor Root CA fingerprint to blockchain     | AIP-1 Section 4.1   | Ethereum mainnet or Sepolia        |
+| 3    | Implement certificate issuance with AIP OIDs | AIP-1 Section 3.1.2 | All 7 custom extensions            |
+| 4    | Define capability vocabulary                 | CTX-1 Section 3-4   | Reserved prefixes                  |
+| 5    | Implement certificate verification           | AIP-1 Section 4.2   | Chain, OIDs, environment, audience |
+| 6    | Integrate policy engine                      | PVS-1 Section 3     | PVS-1 compliant verdicts           |
+| 7    | Emit ADP-1 records                           | ADP-1 Section 3     | AIP fingerprint and verdicts       |
 
 ### Security Team Verification
 
@@ -128,34 +130,35 @@ openssl x509 -in agent.crt -noout -dates
 
 ### Compliance Audit Points
 
-| Audit Point | Method | Expected Result |
-|-------------|--------|-----------------|
-| Certificate Lifetime | `notBefore`/`notAfter` | ≤15 minutes |
-| Blockchain Anchor | Query Ethereum | Hash matches on-chain |
-| Capability Constraints | Parse `Capability-Set` | Authorized only |
-| Environment Isolation | `AIP-Environment` OID | Matches deployment |
-| Policy Verdicts | ADP-1 audit trail | All outputs have PVS-1 |
-| Tenant Isolation | `Tenant-ID` OID | Correct tenant scope |
+| Audit Point            | Method                 | Expected Result        |
+| ---------------------- | ---------------------- | ---------------------- |
+| Certificate Lifetime   | `notBefore`/`notAfter` | ≤15 minutes            |
+| Blockchain Anchor      | Query Ethereum         | Hash matches on-chain  |
+| Capability Constraints | Parse `Capability-Set` | Authorized only        |
+| Environment Isolation  | `AIP-Environment` OID  | Matches deployment     |
+| Policy Verdicts        | ADP-1 audit trail      | All outputs have PVS-1 |
+| Tenant Isolation       | `Tenant-ID` OID        | Correct tenant scope   |
 
 ---
 
 ## Trustless Verification
+
 Identity roots are anchored on Ethereum for immutability.
 
-| Network | Status | Root TX |
-| :--- | :--- | :--- |
-| **Sepolia (Testnet)** | 🟢 Active | `0x9349d41f0c92d128cbc07e8d4697a92fa7d107b2468c1f2fc0e9a3bc6c74a33a` |
-| **Mainnet** | 🟡 Pending | *Scheduled for Q1 2026 Release* |
+| Network               | Status     | Root TX                                                              |
+| :-------------------- | :--------- | :------------------------------------------------------------------- |
+| **Sepolia (Testnet)** | 🟢 Active  | `0x9349d41f0c92d128cbc07e8d4697a92fa7d107b2468c1f2fc0e9a3bc6c74a33a` |
+| **Mainnet**           | 🟡 Pending | _Scheduled for Q1 2026 Release_                                      |
 
 ---
 
 ## Machine-Readable Resources
 
-| Resource | Description |
-|----------|-------------|
-| [schemas/](schemas/) | JSON Schema definitions (ADP-1, PVS-1) |
-| [examples/](examples/) | Sample payloads and certificates |
-| [test-vectors/](test-vectors/) | Validation test cases |
+| Resource                       | Description                            |
+| ------------------------------ | -------------------------------------- |
+| [schemas/](schemas/)           | JSON Schema definitions (ADP-1, PVS-1) |
+| [examples/](examples/)         | Sample payloads and certificates       |
+| [test-vectors/](test-vectors/) | Validation test cases                  |
 
 ---
 
@@ -171,10 +174,10 @@ See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on:
 
-- Reporting issues and requesting features
-- Submitting changes (errata, minor, major)
-- Style and formatting requirements
-- Review process and timelines
+-   Reporting issues and requesting features
+-   Submitting changes (errata, minor, major)
+-   Style and formatting requirements
+-   Review process and timelines
 
 Please read our [Code of Conduct](CODE_OF_CONDUCT.md) before participating.
 
@@ -183,11 +186,12 @@ For security vulnerabilities, see [SECURITY.md](SECURITY.md).
 ---
 
 ## Adoption & Implementation
+
 The reference implementation of these standards is available in the **Agent Control Layer** platform.
 
-* **For Enterprise:** [AgentComplianceLayer.com](https://agentcompliancelayer.com) (Governance, Risk & Audit)
-* **For Developers:** [AgentOpsPlatform.com](https://agentopsplatform.com) (Build, Debug & Trace)
-* **Reference Codebase:** [agentcontrollayer/acl](https://github.com/chrisbaber/acl) (Private Beta)
+-   **For Enterprise:** [AgentComplianceLayer.com](https://agentcompliancelayer.com) (Governance, Risk & Audit)
+-   **For Developers:** [AgentOpsPlatform.com](https://agentopsplatform.com) (Build, Debug & Trace)
+-   **Reference Codebase:** [agentcontrollayer/acl](https://github.com/chrisbaber/acl) (Private Beta)
 
 ---
 
