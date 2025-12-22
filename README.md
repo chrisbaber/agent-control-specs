@@ -3,6 +3,10 @@
 
 # Agent Control Layer Standards
 
+[![Specs Site](https://img.shields.io/badge/specs-live-gold)](https://specs.agentcontrollayer.com)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Blockchain](https://img.shields.io/badge/blockchain-sepolia-green)](https://sepolia.etherscan.io/tx/0x9349d41f0c92d128cbc07e8d4697a92fa7d107b2468c1f2fc0e9a3bc6c74a33a)
+
 ## The Problem: An Internet of Un-Governed Agents
 
 As AI agents proliferate, the internet risks becoming a noisy, chaotic, and dangerous place. Without a standardized control layer, agents will struggle to trust one another. The **Agent Control Layer (ACL)** provides the missing infrastructure for identity, governance, and trust.
@@ -69,6 +73,20 @@ flowchart TB
 3. **Agent Authorization**: Agents present certificates for mTLS; verifiers check capabilities
 4. **Policy Evaluation**: The Gavel evaluates actions against policies, producing PVS-1 verdicts
 5. **Audit Recording**: Agent work recorded via ADP-1, including AIP linkage and policy verdicts
+
+## Quickstart
+
+Want to see the specs in action? Try the interactive validators:
+
+👉 **[specs.agentcontrollayer.com/validator](https://specs.agentcontrollayer.com/validator)**
+
+Or validate your implementation programmatically via our API endpoint:
+
+```bash
+curl -X POST https://specs.agentcontrollayer.com/api/validate/adp \
+  -H "Content-Type: application/json" \
+  -d @your-agent-run.json
+```
 
 ## Abstract
 
@@ -149,6 +167,16 @@ Identity roots are anchored on Ethereum for immutability.
 | :-------------------- | :--------- | :------------------------------------------------------------------- |
 | **Sepolia (Testnet)** | 🟢 Active  | `0x9349d41f0c92d128cbc07e8d4697a92fa7d107b2468c1f2fc0e9a3bc6c74a33a` |
 | **Mainnet**           | 🟡 Pending | _Scheduled for Q1 2026 Release_                                      |
+
+## Roadmap
+
+| Status | Quarter | Milestone                                         |
+| :----: | :-----: | :------------------------------------------------ |
+|   ✅   | Q4 2025 | Core specs published (AIP-1, ADP-1, PVS-1, CTX-1) |
+|   ✅   | Q4 2025 | Interactive validators launched                   |
+|   🟡   | Q1 2026 | Mainnet blockchain anchor                         |
+|   🟡   | Q1 2026 | Reference implementation (ACL) open-sourced       |
+|   ⚪   | Q2 2026 | Multi-language SDKs (Python, TypeScript, Go)      |
 
 ---
 
