@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { X509CertificateGenerator, Extension } from '@peculiar/x509';
 import { validateAip, AIP_OIDS, CheckResult } from '../../lib/validators/aip';
-import { Crypto } from '@peculiar/webcrypto';
 
 
 export const AipValidator = () => {
@@ -19,7 +18,11 @@ export const AipValidator = () => {
 
   const generateTestCert = async () => {
     try {
-      const crypto = new Crypto();
+      if (typeof window === 'undefined' || !window.crypto) {
+        alert("Web Crypto API not available");
+        return;
+      }
+      const crypto = window.crypto;
       const alg = { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256", publicExponent: new Uint8Array([1, 0, 1]), modulusLength: 2048 };
       const keys = await crypto.subtle.generateKey(alg, true, ["sign", "verify"]);
       
