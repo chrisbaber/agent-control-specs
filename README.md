@@ -1,15 +1,15 @@
 [![Status: RFC](https://img.shields.io/badge/Status-RFC-blue?style=for-the-badge)](https://github.com/chrisbaber/agent-control-specs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-# Agent Control Layer Standards
+# AControlLayer Standards
 
-[![Specs Site](https://img.shields.io/badge/specs-live-gold)](https://specs.agentcontrollayer.com)
+[![Specs Site](https://img.shields.io/badge/specs-live-gold)](https://specs.acontrollayer.com)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Blockchain](https://img.shields.io/badge/blockchain-sepolia-green)](https://sepolia.etherscan.io/tx/0x9349d41f0c92d128cbc07e8d4697a92fa7d107b2468c1f2fc0e9a3bc6c74a33a)
 
 ## The Problem: An Internet of Un-Governed Agents
 
-As AI agents proliferate, the internet risks becoming a noisy, chaotic, and dangerous place. Without a standardized control layer, agents will struggle to trust one another. The **Agent Control Layer (ACL)** provides the missing infrastructure for identity, governance, and trust.
+As AI agents proliferate, the internet risks becoming a noisy, chaotic, and dangerous place. Without a standardized control layer, agents will struggle to trust one another. The **AControlLayer (ACL)** provides the missing infrastructure for identity, governance, and trust.
 
 ## Architecture Overview
 
@@ -78,19 +78,19 @@ flowchart TB
 
 Want to see the specs in action? Try the interactive validators:
 
-👉 **[specs.agentcontrollayer.com/validator](https://specs.agentcontrollayer.com/validator)**
+👉 **[specs.acontrollayer.com/validator](https://specs.acontrollayer.com/validator)**
 
 Or validate your implementation programmatically via our API endpoint:
 
 ```bash
-curl -X POST https://specs.agentcontrollayer.com/api/validate/adp \
+curl -X POST https://specs.acontrollayer.com/api/validate/adp \
   -H "Content-Type: application/json" \
   -d @your-agent-run.json
 ```
 
 ## Abstract
 
-The Agent Control Layer (ACL) specifications define open standards for autonomous AI agent identity, data interchange, policy enforcement, and capability management. These specifications enable secure, auditable, and interoperable agent operations across heterogeneous platforms and frameworks.
+The AControlLayer (ACL) specifications define open standards for autonomous AI agent identity, data interchange, policy enforcement, and capability management. These specifications enable secure, auditable, and interoperable agent operations across heterogeneous platforms and frameworks.
 
 This repository contains four core specifications:
 
@@ -215,14 +215,14 @@ For security vulnerabilities, see [SECURITY.md](SECURITY.md).
 
 ## Adoption & Implementation
 
-The reference implementation of these standards is available in the **Agent Control Layer** platform.
+The reference implementation of these standards is available in the **AControlLayer** platform.
 
--   **For Enterprise:** [AgentComplianceLayer.com](https://agentcompliancelayer.com) (Governance, Risk & Audit)
--   **For Developers:** [AgentOpsPlatform.com](https://agentopsplatform.com) (Build, Debug & Trace)
+-   **For Enterprise:** [AgentComplianceLayer.com](https://acontrollayer.com) (Governance, Risk & Audit)
+-   **For Developers:** [AgentOpsPlatform.com](https://acontrollayer.com) (Build, Debug & Trace)
 -   **Reference Codebase:** [agentcontrollayer/acl](https://github.com/chrisbaber/acl) (Private Beta)
 
 ---
 
 ## License
 
-Copyright 2025 Agent Control Layer. Released under the [MIT License](LICENSE).
+Copyright 2025 AControlLayer, LLC. Released under the [MIT License](LICENSE).

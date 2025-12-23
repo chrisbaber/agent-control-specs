@@ -1,5 +1,5 @@
 export default {
-  logo: <span>Agent Control Specs</span>,
+  logo: <span>AControlLayer</span>,
   project: {
     link: 'https://github.com/chrisbaber/agent-control-specs'
   },
@@ -16,7 +16,7 @@ export default {
     <>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta property="og:title" content="Agent Control Specs" />
-      <meta property="og:description" content="Agent Control Layer Standards" />
+      <meta property="og:description" content="AControlLayer Standards" />
     </>
   ),
   primaryHue: 45, // Gold-ish
