@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://agentcontrollayer.com/schemas/adp-1.schema.json",
+  "$id": "https://acontrollayer.com/schemas/adp-1.schema.json",
   "title": "ADP-1 Agent Run Schema",
   "description": "JSON Schema for Agent Data Protocol (ADP-1) Agent Run records",
   "type": "object",

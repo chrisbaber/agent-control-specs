@@ -2,7 +2,7 @@
 spec: CTX-1
 title: Capability & Trust eXtensions
 subtitle: Standard Capability Strings for AIP & ADP
-author: Agent Control Layer (ACL) Team <specs@agentcontrollayer.com>
+author: AControlLayer (ACL) Team <specs@acontrollayer.com>
 status: Request for Comment (RFC)
 type: Informational
 category: Capabilities
@@ -214,4 +214,4 @@ The authors thank the early reviewers and implementers who provided feedback on 
 
 ---
 
-_Copyright 2025 Agent Control Layer. Released under the [MIT License](../LICENSE)._
+_Copyright 2025 AControlLayer. Released under the [MIT License](../LICENSE)._

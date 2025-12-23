@@ -14,7 +14,7 @@ Thank you for your interest in contributing to the Agent Control Layer (ACL) spe
 
 ## Code of Conduct
 
-This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to specs@agentcontrollayer.com.
+This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to specs@acontrollayer.com.
 
 ---
 
@@ -188,7 +188,7 @@ All specifications MUST follow the structure defined in [SPEC-0](specs/SPEC-0.md
 
 Current specification maintainers:
 
-- Agent Control Layer Team (specs@agentcontrollayer.com)
+- Agent Control Layer Team (specs@acontrollayer.com)
 
 ---
 
@@ -204,7 +204,7 @@ Contributors who make significant contributions will be acknowledged in:
 
 ## Questions?
 
-- **Email**: specs@agentcontrollayer.com
+- **Email**: specs@acontrollayer.com
 - **Issues**: [GitHub Issues](https://github.com/chrisbaber/agent-control-specs/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/chrisbaber/agent-control-specs/discussions)
 

@@ -2,7 +2,7 @@
 spec: ADP-1
 title: Agent Data Protocol
 subtitle: Universal Adapter for Agent Work
-author: Agent Control Layer (ACL) Team <specs@agentcontrollayer.com>
+author: AControlLayer (ACL) Team <specs@acontrollayer.com>
 status: Request for Comment (RFC)
 type: Standards Track
 category: Data
@@ -336,9 +336,9 @@ The ACL implementation provides the reference mapping:
 
 ### 11.2 Informative References
 
-- **[AIP-1]** Agent Control Layer, "Agent Identity Protocol", AIP-1, 2025.
-- **[CTX-1]** Agent Control Layer, "Capability & Trust eXtensions", CTX-1, 2025.
-- **[PVS-1]** Agent Control Layer, "Policy Verdict Schema", PVS-1, 2025.
+- **[AIP-1]** AControlLayer, "Agent Identity Protocol", AIP-1, 2025.
+- **[CTX-1]** AControlLayer, "Capability & Trust eXtensions", CTX-1, 2025.
+- **[PVS-1]** AControlLayer, "Policy Verdict Schema", PVS-1, 2025.
 
 ## 12. Acknowledgments
 
@@ -346,4 +346,4 @@ The authors thank the early reviewers and implementers who provided feedback on 
 
 ---
 
-_Copyright 2025 Agent Control Layer. Released under the [MIT License](../LICENSE)._
+_Copyright 2025 AControlLayer. Released under the [MIT License](../LICENSE)._

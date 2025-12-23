@@ -2,7 +2,7 @@
 spec: AIP-1
 title: Agent Identity Protocol
 subtitle: The Standard for Autonomous Trust
-author: Agent Control Layer (ACL) Team <specs@agentcontrollayer.com>
+author: AControlLayer (ACL) Team <specs@acontrollayer.com>
 status: Request for Comment (RFC)
 type: Standards Track
 category: Identity
@@ -260,4 +260,4 @@ The authors thank the early reviewers and implementers who provided feedback on 
 
 ---
 
-_Copyright 2025 Agent Control Layer. Released under the [MIT License](../LICENSE)._
+_Copyright 2025 AControlLayer. Released under the [MIT License](../LICENSE)._

@@ -2,7 +2,7 @@
 spec: SPEC-0
 title: Specification Process
 subtitle: Meta-Specification for ACL Standards
-author: Agent Control Layer (ACL) Team <specs@agentcontrollayer.com>
+author: AControlLayer (ACL) Team <specs@acontrollayer.com>
 status: Request for Comment (RFC)
 type: Informational
 category: Process
@@ -206,4 +206,4 @@ Implementations MAY claim conformance using:
 
 ---
 
-_Copyright 2025 Agent Control Layer. Released under the MIT License._
+_Copyright 2025 AControlLayer. Released under the MIT License._

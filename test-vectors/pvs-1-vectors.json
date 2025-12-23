@@ -1,5 +1,5 @@
 {
-  "$schema": "https://agentcontrollayer.com/schemas/pvs-1.schema.json",
+  "$schema": "https://acontrollayer.com/schemas/pvs-1.schema.json",
   "description": "Test vectors for PVS-1 schema validation",
   "vectors": [
     {

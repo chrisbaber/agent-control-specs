@@ -10,7 +10,7 @@ The Agent Control Layer team takes security issues seriously. We appreciate your
 
 Instead, please report security vulnerabilities by emailing:
 
-**security@agentcontrollayer.com**
+**security@acontrollayer.com**
 
 Include the following information:
 
@@ -53,4 +53,4 @@ Each ACL specification includes a Security Considerations section addressing:
 ## PGP Key
 
 For encrypted communications, our PGP key is available at:
-https://agentcontrollayer.com/.well-known/pgp-key.txt
+https://acontrollayer.com/.well-known/pgp-key.txt

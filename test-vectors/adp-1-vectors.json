@@ -1,5 +1,5 @@
 {
-  "$schema": "https://agentcontrollayer.com/schemas/adp-1.schema.json",
+  "$schema": "https://acontrollayer.com/schemas/adp-1.schema.json",
   "description": "Test vectors for ADP-1 schema validation",
   "vectors": [
     {

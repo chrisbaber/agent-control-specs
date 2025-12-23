@@ -2,7 +2,7 @@
 spec: PVS-1
 title: Policy Verdict Schema
 subtitle: Standard Output for The Gavel
-author: Agent Control Layer (ACL) Team <specs@agentcontrollayer.com>
+author: AControlLayer (ACL) Team <specs@acontrollayer.com>
 status: Request for Comment (RFC)
 type: Standards Track
 category: Policy
@@ -222,4 +222,4 @@ The authors thank the early reviewers and implementers who provided feedback on 
 
 ---
 
-_Copyright 2025 Agent Control Layer. Released under the [MIT License](../LICENSE)._
+_Copyright 2025 AControlLayer. Released under the [MIT License](../LICENSE)._

@@ -2,7 +2,7 @@
 spec: AIP-1
 title: Agent Identity Protocol
 subtitle: The Standard for Autonomous Trust
-author: Agent Control Layer (ACL) Team <specs@agentcontrollayer.com>
+author: AControlLayer (ACL) Team <specs@acontrollayer.com>
 status: Request for Comment (RFC)
 type: Standards Track
 category: Identity
@@ -251,8 +251,8 @@ Future releases will expand how ACL maps internal RBAC permissions into the `Cap
 
 ### 10.2 Informative References
 
-- **[CTX-1]** Agent Control Layer, "Capability & Trust eXtensions", CTX-1, 2025.
-- **[ADP-1]** Agent Control Layer, "Agent Data Protocol", ADP-1, 2025.
+- **[CTX-1]** AControlLayer, "Capability & Trust eXtensions", CTX-1, 2025.
+- **[ADP-1]** AControlLayer, "Agent Data Protocol", ADP-1, 2025.
 
 ## 11. Acknowledgments
 
@@ -260,4 +260,4 @@ The authors thank the early reviewers and implementers who provided feedback on 
 
 ---
 
-_Copyright 2025 Agent Control Layer. Released under the [MIT License](../LICENSE)._
+_Copyright 2025 AControlLayer. Released under the [MIT License](../LICENSE)._

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://agentcontrollayer.com/schemas/pvs-1.schema.json",
+  "$id": "https://acontrollayer.com/schemas/pvs-1.schema.json",
   "title": "PVS-1 Policy Verdict Schema",
   "description": "JSON Schema for Policy Verdict Schema (PVS-1) records",
   "type": "object",

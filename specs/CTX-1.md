@@ -2,7 +2,7 @@
 spec: CTX-1
 title: Capability & Trust eXtensions
 subtitle: Standard Capability Strings for AIP & ADP
-author: Agent Control Layer (ACL) Team <specs@agentcontrollayer.com>
+author: AControlLayer (ACL) Team <specs@acontrollayer.com>
 status: Request for Comment (RFC)
 type: Informational
 category: Capabilities
@@ -205,8 +205,8 @@ Verifiers SHOULD:
 
 ### 9.2 Informative References
 
-- **[AIP-1]** Agent Control Layer, "Agent Identity Protocol", AIP-1, 2025.
-- **[ADP-1]** Agent Control Layer, "Agent Data Protocol", ADP-1, 2025.
+- **[AIP-1]** AControlLayer, "Agent Identity Protocol", AIP-1, 2025.
+- **[ADP-1]** AControlLayer, "Agent Data Protocol", ADP-1, 2025.
 
 ## 10. Acknowledgments
 
@@ -214,4 +214,4 @@ The authors thank the early reviewers and implementers who provided feedback on 
 
 ---
 
-_Copyright 2025 Agent Control Layer. Released under the [MIT License](../LICENSE)._
+_Copyright 2025 AControlLayer. Released under the [MIT License](../LICENSE)._
