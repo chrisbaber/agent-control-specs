@@ -1,13 +1,13 @@
 ---
 spec: PVS-1
 title: Policy Verdict Schema
-subtitle: Standard Output for The Gavel
+subtitle: Standard Output for Policy Engines
 author: Agent Control Layer (ACL) Team <specs@agentcontrollayer.com>
 status: Request for Comment (RFC)
 type: Standards Track
 category: Policy
 created: 2025-12-10
-updated: 2025-12-14
+updated: 2025-12-23
 requires: ADP-1
 replaces: None
 ---
@@ -57,6 +57,7 @@ A PVS-1 verdict is a single JSON object with the following fields:
 ```jsonc
 {
   "version": "pvs-1",
+  "decision": "allow",
   "approved": true,
   "reasoning": "Short explanation of the decision.",
   "policy_violations": [],
@@ -64,7 +65,7 @@ A PVS-1 verdict is a single JSON object with the following fields:
   "policy_set": ["No PII leakage", "No financial advice"],
   "metadata": {
     "engine": "the-gavel",
-    "engine_version": "1.0.0",
+    "engine_version": "2.0.0",
     "latency_ms": 520,
     "tenant_id": "tenant-123",
     "agent_id": "coach"
@@ -77,10 +78,17 @@ A PVS-1 verdict is a single JSON object with the following fields:
 | Field | Type | Description |
 |-------|------|-------------|
 | `version` | string | MUST be `"pvs-1"` for this spec |
-| `approved` | boolean | `true` if content may proceed, `false` otherwise |
+| `decision` | string | One of `"allow"`, `"deny"`, or `"escalate"` |
+| `approved` | boolean | `true` if `decision` is `"allow"`, `false` otherwise. Retained for backwards compatibility |
 | `reasoning` | string | Human-readable explanation of the decision |
-| `policy_violations` | array | Policy descriptions that were violated (empty if approved) |
+| `policy_violations` | array | Policy descriptions that were violated (empty if decision is "allow") |
 | `confidence_score` | number | Engine confidence in verdict (0.0 to 1.0) |
+
+#### Decision Values
+
+- `"allow"` — Content passes policy evaluation; proceed with execution
+- `"deny"` — Content violates policy; block execution
+- `"escalate"` — Engine is uncertain or policy requires human review
 
 ### 2.2 Optional Fields
 
@@ -93,29 +101,79 @@ Consumers MUST ignore unknown keys in `metadata`.
 
 ### 2.3 Constraints
 
-- When `approved` is `true`, `policy_violations` MUST be an empty array.
+- When `decision` is `"allow"`, `policy_violations` MUST be an empty array.
+- When `decision` is `"allow"`, `approved` MUST be `true`.
+- When `decision` is `"deny"` or `"escalate"`, `approved` MUST be `false`.
 - `confidence_score` MUST be between 0.0 and 1.0 inclusive.
+- Low confidence (< 0.7) SHOULD result in `decision: "escalate"`.
 
 ## 3. The Gavel Integration
 
-The Gavel (ACL's policy engine) uses this TypeScript interface:
+The Gavel (ACL's reference policy engine) uses this TypeScript interface:
 
 ```typescript
+type PolicyDecision = "allow" | "deny" | "escalate";
+
 interface PolicyEvaluation {
-  approved: boolean;
+  version: string;
+  decision: PolicyDecision;
+  approved: boolean;  // Derived: true if decision === "allow"
   reasoning: string;
   policy_violations: string[];
   confidence_score: number;
+  policy_set?: string[];
+  metadata?: {
+    engine: string;
+    engine_version: string;
+    latency_ms: number;
+    tenant_id?: string;
+    agent_id?: string;
+  };
 }
 ```
 
-To produce PVS-1 compliant output, The Gavel SHOULD:
+The Gavel determines `decision` based on:
+
+1. **Clear violation detected** → `decision: "deny"`
+2. **No violations, high confidence (≥ 0.7)** → `decision: "allow"`
+3. **Uncertain or low confidence (< 0.7)** → `decision: "escalate"`
+
+To produce PVS-1 compliant output, policy engines SHOULD:
 
 - Add `version: "pvs-1"` to its JSON output
+- Include `decision` with the appropriate value
+- Derive `approved` from `decision` for backwards compatibility
 - Include `policy_set` with evaluated policy names
-- Include `metadata.engine` as `"the-gavel"`
+- Include `metadata.engine` identifying the engine
 - Include `metadata.engine_version` with semantic version
 - Include `metadata.tenant_id` and `metadata.agent_id` when available
+
+## 3.1 Escalation Handling
+
+When a policy engine returns `decision: "escalate"`, the consuming system SHOULD route the verdict to a human review process. The specific implementation is left to the platform.
+
+```
+Content → Policy Engine → PVS-1 Verdict
+                              ↓
+                    decision === "allow"    → Proceed
+                    decision === "deny"     → Block
+                    decision === "escalate" → Human Review
+                              ↓
+                    Human Reviewer → Approve/Reject
+```
+
+**Recommended escalation triggers:**
+- Low confidence score (< 0.7)
+- Ambiguous policy match
+- High-stakes operation (configured per use case)
+- Explicit policy requiring human review
+- System uncertainty or error conditions
+
+Platforms implementing PVS-1 SHOULD:
+1. Pause execution when `decision === "escalate"`
+2. Present the verdict to a human reviewer
+3. Allow the reviewer to approve (proceed) or reject (block)
+4. Log the human decision for audit purposes
 
 ## 4. Embedding in ADP-1
 
@@ -135,6 +193,7 @@ PVS verdicts are designed to embed directly inside ADP-1 steps as `observation.o
     "type": "tool_result",
     "output": {
       "version": "pvs-1",
+      "decision": "deny",
       "approved": false,
       "reasoning": "Draft contained direct SSN.",
       "policy_violations": ["No PII"],
@@ -147,9 +206,10 @@ PVS verdicts are designed to embed directly inside ADP-1 steps as `observation.o
 ```
 
 This enables downstream systems to:
-- Enforce decisions (block/allow)
+- Enforce decisions (block/allow/escalate)
+- Route uncertain verdicts to human reviewers
 - Aggregate policy violation statistics
-- Audit and explain why output was blocked
+- Audit and explain why output was blocked or escalated
 
 ## 5. Security Considerations
 
@@ -203,6 +263,7 @@ A JSON Schema for PVS-1 is provided at `schemas/pvs-1.schema.json`. Conforming i
 - **Structured Violations**: Objects with IDs, severities, remediation hints
 - **Policy Categories**: `privacy`, `financial`, `safety` taxonomies
 - **Policy Links**: References to machine-readable policy definitions
+- **Escalation Priority**: Levels like `urgent`, `normal`, `low` for triaging human review
 
 ## 8. References
 

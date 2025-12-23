@@ -21,6 +21,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2025-12-23
+
+### Changed
+
+#### PVS-1: Policy Verdict Schema v1.1.0
+- **BREAKING**: Added required `decision` field with values `"allow"`, `"deny"`, or `"escalate"`
+- The `approved` field is now derived from `decision` for backwards compatibility
+- Added Section 3.1: Escalation Handling with implementation guidelines
+- Added recommendation that low confidence (< 0.7) SHOULD result in `decision: "escalate"`
+- Updated examples to include `decision` field
+- Added escalation priority to Future Work section
+
+**Migration Guide:**
+- Existing consumers should update to check `decision` field
+- For backwards compatibility, `approved: true` maps to `decision: "allow"`
+- For backwards compatibility, `approved: false` with violations maps to `decision: "deny"`
+- New `decision: "escalate"` indicates human review is required
+
+**Rationale:**
+The boolean `approved` field was insufficient for cases where the policy engine is uncertain.
+The new `decision` field allows explicit escalation to human reviewers, improving safety in
+high-stakes scenarios where the engine lacks confidence in its verdict.
+
+---
+
 ## [1.0.0] - 2025-12-14
 
 ### Added
@@ -66,7 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 |---------------|-----------------|-----------------|--------------|
 | AIP-1 | 1.0.0 | 2025-12-09 | 2025-12-14 |
 | ADP-1 | 1.0.0 | 2025-12-10 | 2025-12-14 |
-| PVS-1 | 1.0.0 | 2025-12-10 | 2025-12-14 |
+| PVS-1 | 1.1.0 | 2025-12-10 | 2025-12-23 |
 | CTX-1 | 1.0.0 | 2025-12-10 | 2025-12-14 |
 
 ---
@@ -85,5 +110,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/chrisbaber/agent-control-specs/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/chrisbaber/agent-control-specs/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/chrisbaber/agent-control-specs/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/chrisbaber/agent-control-specs/releases/tag/v1.0.0
